@@ -1,0 +1,5 @@
+name: MariaQuest
+version: @version@
+main: com.github.shur.mariaquest.MariaQuest
+api-version: 1.16
+authors: [ ShuR ]
