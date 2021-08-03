@@ -1,4 +1,8 @@
 package com.github.shur.mariaquest.player
 
-class PlayerData {
+import java.util.*
+
+class PlayerData(
+    val uuid: UUID
+) {
 }
