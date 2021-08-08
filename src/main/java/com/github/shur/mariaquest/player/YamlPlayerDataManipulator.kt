@@ -46,7 +46,8 @@ class YamlPlayerDataManipulator(
                         }
                         "inProgress" -> {
                             val progress = questSection.getInt("progress")
-                            status = QuestStatus.InProgress(progress)
+                            val missionCount = questSection.getInt("missionCount")
+                            status = QuestStatus.InProgress(progress, missionCount)
                         }
                     }
                 }
@@ -82,6 +83,7 @@ class YamlPlayerDataManipulator(
                 is QuestStatus.InProgress -> {
                     questSection.set("status", "inProgress")
                     questSection.set("progress", questStatus.progress)
+                    questSection.set("missionCount", questStatus.missionCount)
                 }
             }
         }
