@@ -14,10 +14,10 @@ class BreakBlockMission(
     goal: Int,
     onStart: (Player) -> Unit,
     onChangeCount: (Player, before: Int, after: Int) -> Unit,
-    onFinish: (Player) -> Unit,
+    onClear: (Player) -> Unit,
     onGiveUp: (Player) -> Unit,
     filter: (Player, BreakBlockEvent) -> Boolean
-) : Mission<BreakBlockMission.BreakBlockEvent>(goal, onStart, onChangeCount, onFinish, onGiveUp, filter) {
+) : Mission<BreakBlockMission.BreakBlockEvent>(goal, onStart, onChangeCount, onClear, onGiveUp, filter) {
 
     data class BreakBlockEvent(val brokenBlock: Block)
 
