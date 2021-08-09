@@ -1,5 +1,6 @@
 package com.github.shur.mariaquest
 
+import com.github.shur.mariaquest.event.TickEvent
 import com.github.shur.mariaquest.listener.PlayerDataListener
 import com.github.shur.mariaquest.player.data.PlayerDataManager
 import com.github.shur.mariaquest.player.data.manipulator.PlayerDataManipulator
@@ -20,12 +21,25 @@ class MariaQuest : JavaPlugin() {
 
 
         server.pluginManager.registerEvents(PlayerDataListener(), this)
+
+        startTickRunnable()
     }
 
     override fun onDisable() {
         playerDataManager.getAll().forEach {
             playerDataManager.save(it.uuid)
         }
+    }
+
+    private fun startTickRunnable() {
+        server.scheduler.runTaskTimer(
+            this,
+            Runnable {
+                server.pluginManager.callEvent(TickEvent())
+            },
+            0,
+            1
+        )
     }
 
     companion object {
