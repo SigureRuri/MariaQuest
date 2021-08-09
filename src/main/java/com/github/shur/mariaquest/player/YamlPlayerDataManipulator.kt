@@ -42,7 +42,7 @@ class YamlPlayerDataManipulator(
 
                     when (questSection.getString("status")) {
                         "idle" -> {
-                            status = QuestStatus.IDLE
+                            status = QuestStatus.Idle
                         }
                         "inProgress" -> {
                             val progress = questSection.getInt("progress")
@@ -69,7 +69,7 @@ class YamlPlayerDataManipulator(
             set("version", VERSION)
         }
 
-        playerData.getQuests().map { it.value }.forEach { quest ->
+        playerData.getQuests().forEach { quest ->
             val questSection = yaml.createSection("quests.${quest.id}")
 
             questSection.set("clearCount", quest.clearCount)
@@ -77,7 +77,7 @@ class YamlPlayerDataManipulator(
             questSection.set("lastEndedAt", quest.lastEndedAt?.format(DateTimeFormatter.BASIC_ISO_DATE))
 
             when (val questStatus = quest.status) {
-                is QuestStatus.IDLE -> {
+                is QuestStatus.Idle -> {
                     questSection.set("status", "idle")
                 }
                 is QuestStatus.InProgress -> {

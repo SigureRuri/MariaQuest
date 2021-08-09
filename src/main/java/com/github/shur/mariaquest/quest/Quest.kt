@@ -8,12 +8,13 @@ data class Quest(
     val name: String,
     val description: List<String>,
     val missions: List<Mission<*>>,
-    val timeLimitSeconds: Int?,
-    val coolTimeSeconds: Int?,
+    val timeLimitSeconds: Long?,
+    val coolTimeSeconds: Long?,
     val orderableTimes: Int?,
-    val requiredQuests: List<Quest>,
+    val requiredQuests: List<QuestId>,
     val requirement: (Player) -> Boolean,
     val requirementDescription: List<String>,
     val onStart: (Player) -> Unit,
-    val onFinish: (Player) -> Unit
+    val onClear: (Player) -> Unit,
+    val onGiveUp: (Player) -> Unit
 )

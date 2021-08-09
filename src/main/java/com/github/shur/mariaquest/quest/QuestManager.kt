@@ -15,4 +15,6 @@ class QuestManager {
 
     fun getAll(): List<Quest> = quests.values.toList()
 
+    fun has(id: QuestId) = quests.contains(id)
+
 }

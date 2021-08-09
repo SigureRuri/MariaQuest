@@ -2,7 +2,6 @@ package com.github.shur.mariaquest.player
 
 import com.github.shur.mariaquest.player.data.PlayerData
 import java.util.*
-import kotlin.Exception
 
 class PlayerDataManager(
     private val playerDataManipulator: PlayerDataManipulator

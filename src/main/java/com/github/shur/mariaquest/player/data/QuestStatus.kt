@@ -3,10 +3,18 @@ package com.github.shur.mariaquest.player.data
 sealed class QuestStatus {
 
     class InProgress(
-        var progress: Int,
-        var missionCount: Int
-    ) : QuestStatus()
+        progress: Int,
+        missionCount: Int
+    ) : QuestStatus() {
 
-    object IDLE : QuestStatus()
+        var progress: Int = progress
+            set(value) { field = 0.coerceAtLeast(value) }
+
+        var missionCount: Int = missionCount
+            set(value) { field = 0.coerceAtLeast(value) }
+
+    }
+
+    object Idle : QuestStatus()
 
 }
