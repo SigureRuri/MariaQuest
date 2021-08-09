@@ -1,9 +1,9 @@
 package com.github.shur.mariaquest
 
 import com.github.shur.mariaquest.listener.PlayerDataListener
-import com.github.shur.mariaquest.player.PlayerDataManager
-import com.github.shur.mariaquest.player.PlayerDataManipulator
-import com.github.shur.mariaquest.player.YamlPlayerDataManipulator
+import com.github.shur.mariaquest.player.data.PlayerDataManager
+import com.github.shur.mariaquest.player.data.manipulator.PlayerDataManipulator
+import com.github.shur.mariaquest.player.data.manipulator.YamlPlayerDataManipulator
 import com.github.shur.mariaquest.quest.QuestManager
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File

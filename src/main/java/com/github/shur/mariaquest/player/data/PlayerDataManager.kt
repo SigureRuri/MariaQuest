@@ -1,6 +1,6 @@
-package com.github.shur.mariaquest.player
+package com.github.shur.mariaquest.player.data
 
-import com.github.shur.mariaquest.player.data.PlayerData
+import com.github.shur.mariaquest.player.data.manipulator.PlayerDataManipulator
 import java.util.*
 
 class PlayerDataManager(
