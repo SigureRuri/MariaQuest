@@ -1,6 +1,6 @@
 package com.github.shur.mariaquest.quest
 
-object QuestManager {
+class QuestManager {
 
     private val quests = mutableMapOf<QuestId, Quest>()
 

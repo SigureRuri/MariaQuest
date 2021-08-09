@@ -4,6 +4,7 @@ import com.github.shur.mariaquest.listener.PlayerDataListener
 import com.github.shur.mariaquest.player.PlayerDataManager
 import com.github.shur.mariaquest.player.PlayerDataManipulator
 import com.github.shur.mariaquest.player.YamlPlayerDataManipulator
+import com.github.shur.mariaquest.quest.QuestManager
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
@@ -11,6 +12,8 @@ class MariaQuest : JavaPlugin() {
 
     override fun onEnable() {
         instance = this
+
+        questManager = QuestManager()
 
         playerDataManipulator = YamlPlayerDataManipulator(File("${dataFolder.absolutePath}${File.separator}player"))
         playerDataManager = PlayerDataManager(playerDataManipulator)
@@ -28,6 +31,9 @@ class MariaQuest : JavaPlugin() {
     companion object {
 
         lateinit var instance: MariaQuest
+            private set
+
+        lateinit var questManager: QuestManager
             private set
 
         private lateinit var playerDataManipulator: PlayerDataManipulator
