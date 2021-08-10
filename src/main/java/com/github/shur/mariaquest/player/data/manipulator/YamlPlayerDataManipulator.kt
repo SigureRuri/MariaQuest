@@ -32,29 +32,31 @@ class YamlPlayerDataManipulator(
 
         val playerData = PlayerData(uuid)
 
-        yaml.getConfigurationSection("quests")!!.getKeys(false)
-            .map { QuestId.of(it) }
-            .forEach { questId ->
-                val questSection = yaml.getConfigurationSection("quests.$questId")!!
-                val questData = QuestData(questId).apply {
-                    clearCount = questSection.getInt("clearCount")
-                    lastStartedAt = LocalDateTime.parse(questSection.getString("lastStartedAt"), DateTimeFormatter.BASIC_ISO_DATE)
-                    lastEndedAt = LocalDateTime.parse(questSection.getString("lastEndedAt"), DateTimeFormatter.BASIC_ISO_DATE)
+        if (yaml.isConfigurationSection("quests")) {
+            yaml.getConfigurationSection("quests")!!.getKeys(false)
+                .map { QuestId.of(it) }
+                .forEach { questId ->
+                    val questSection = yaml.getConfigurationSection("quests.$questId")!!
+                    val questData = QuestData(questId).apply {
+                        clearCount = questSection.getInt("clearCount")
+                        lastStartedAt = LocalDateTime.parse(questSection.getString("lastStartedAt"), DateTimeFormatter.BASIC_ISO_DATE)
+                        lastEndedAt = LocalDateTime.parse(questSection.getString("lastEndedAt"), DateTimeFormatter.BASIC_ISO_DATE)
 
-                    when (questSection.getString("status")) {
-                        "idle" -> {
-                            status = QuestStatus.Idle
-                        }
-                        "inProgress" -> {
-                            val progress = questSection.getInt("progress")
-                            val missionCount = questSection.getInt("missionCount")
-                            status = QuestStatus.InProgress(progress, missionCount)
+                        when (questSection.getString("status")) {
+                            "idle" -> {
+                                status = QuestStatus.Idle
+                            }
+                            "inProgress" -> {
+                                val progress = questSection.getInt("progress")
+                                val missionCount = questSection.getInt("missionCount")
+                                status = QuestStatus.InProgress(progress, missionCount)
+                            }
                         }
                     }
-                }
 
-                playerData.currentQuests[questId] = questData
-            }
+                    playerData.currentQuests[questId] = questData
+                }
+        }
 
         return playerData
     }
