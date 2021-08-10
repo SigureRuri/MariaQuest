@@ -11,7 +11,7 @@ object QuestIcons {
 
     fun applyQuestIcon(icon: IconDSL, quest: Quest) = icon.apply {
         type = Material.LIGHT_BLUE_CONCRETE
-        name = quest.name
+        name = "${ChatColor.WHITE}${quest.name}"
 
         lore = mutableListOf<String>().apply {
             add("")
@@ -42,12 +42,12 @@ object QuestIcons {
                 add("${ChatColor.GREEN}${ChatColor.BOLD} - 受注条件")
                 addAll(quest.requirementDescription.map { "    $it" })
             }
-        }
+        }.map { "${ChatColor.WHITE}$it" }.toMutableList()
     }
 
     fun applyQuestIconWithAllData(icon: IconDSL, quest: Quest) = icon.apply {
         type = Material.LIGHT_BLUE_CONCRETE
-        name = quest.name
+        name = "${ChatColor.WHITE}${quest.name}"
 
         lore = mutableListOf<String>().apply {
             add("")
@@ -77,7 +77,7 @@ object QuestIcons {
             } else {
                 addAll(quest.requirementDescription.map { "    $it" })
             }
-        }
+        }.map { "${ChatColor.WHITE}$it" }.toMutableList()
     }
 
 }

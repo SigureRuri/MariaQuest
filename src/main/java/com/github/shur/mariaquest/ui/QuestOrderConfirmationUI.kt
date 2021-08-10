@@ -6,6 +6,7 @@ import com.github.shur.mariaquest.quest.QuestId
 import com.github.shur.whitebait.dsl.window
 import com.github.shur.whitebait.inventory.InventoryUI
 import com.github.shur.whitebait.inventory.window.TypedWindowOption
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.event.inventory.InventoryType
@@ -31,9 +32,18 @@ class QuestOrderConfirmationUI(
                 name = "${ChatColor.GOLD}${ChatColor.BOLD}受注"
             }
             onClick {
-                // TODO: DEBUG
-                PlayerQuestController.order(player, questId)
-                // player.closeInventory()
+                when (PlayerQuestController.order(player, questId)) {
+                    PlayerQuestController.OrderResult.ALREADY_ORDERED -> player.sendMessage("すでにこのクエストを受注しています。")
+                    PlayerQuestController.OrderResult.OVER_ORDERABLE_TIMES -> player.sendMessage("クエスト受注可能回数の上限に達しています。")
+                    PlayerQuestController.OrderResult.NOT_CLEARED_REQUIRED_QUESTS -> player.sendMessage("前提クエストをクリアしていません。")
+                    PlayerQuestController.OrderResult.IN_COOL_TIME -> player.sendMessage("クールタイム中です。")
+                    PlayerQuestController.OrderResult.DO_NOT_MEET_REQUIREMENT -> player.sendMessage("条件を満たしていません。")
+                    else -> { /* DO NOTHING */ }
+                }
+
+                Bukkit.getScheduler().runTask(MariaQuest.instance, Runnable {
+                    player.closeInventory()
+                })
             }
         }
 
