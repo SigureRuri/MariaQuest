@@ -29,11 +29,11 @@ object PlayerQuestController {
         if (questData.status !is QuestStatus.Idle) return OrderResult.ALREADY_ORDERED
 
         // クエスト受注回数が規定を超えていない
-        if (quest.orderableTimes != null && questData.clearCount < quest.orderableTimes) return OrderResult.OVER_ORDERABLE_TIMES
+        if (quest.orderableTimes != null && questData.clearCount > quest.orderableTimes) return OrderResult.OVER_ORDERABLE_TIMES
 
         // 前提クエストの確認
         quest.requiredQuests.forEach {
-            if (MariaQuest.questManager.has(it)) return OrderResult.NOT_CLEARED_REQUIRED_QUESTS
+            if (!MariaQuest.questManager.has(it)) return OrderResult.NOT_CLEARED_REQUIRED_QUESTS
             val requiredQuestData = playerData.currentQuests[it] ?: return OrderResult.NOT_CLEARED_REQUIRED_QUESTS
             if (!requiredQuestData.hasCleared()) return OrderResult.NOT_CLEARED_REQUIRED_QUESTS
         }
@@ -46,14 +46,13 @@ object PlayerQuestController {
         }
 
         // 要件を満たしている
-        if (!quest.requirement(player)) {
-            return OrderResult.DO_NOT_MEET_REQUIREMENT
-        }
+        if (!quest.requirement(player)) return OrderResult.DO_NOT_MEET_REQUIREMENT
 
-
-        playerData.order(questId)
 
         quest.onStart(player)
+        quest.missions[0].onStart(player)
+
+        playerData.order(questId)
 
         return OrderResult.SUCCESS
     }
@@ -70,7 +69,7 @@ object PlayerQuestController {
     fun complete(player: Player, questId: QuestId): CompleteResult {
         val quest = MariaQuest.questManager.get(questId) ?: throw IllegalArgumentException("The quest is not found: $questId")
         val playerData = MariaQuest.playerDataManager.get(player.uniqueId)!!
-        val questData = playerData.currentQuests[questId] ?: throw IllegalArgumentException("The QuestData is not found: $questId")
+        val questData = playerData.currentQuests[questId] ?: return CompleteResult.NOT_ORDERED
 
         // クエストを受注しているか
         val status = questData.status as? QuestStatus.InProgress ?: return CompleteResult.NOT_ORDERED
@@ -78,27 +77,26 @@ object PlayerQuestController {
         if (status.progress < quest.missions.lastIndex) return CompleteResult.NOT_CLEARED_ALL_MISSIONS
 
 
-        playerData.complete(questId)
-
         quest.onClear(player)
+
+        playerData.complete(questId)
 
         return CompleteResult.SUCCESS
     }
 
-    fun onGiveUp(player: Player, questId: QuestId): GiveUpResult {
+    fun giveUp(player: Player, questId: QuestId): GiveUpResult {
         val quest = MariaQuest.questManager.get(questId) ?: throw IllegalArgumentException("The quest is not found: $questId")
         val playerData = MariaQuest.playerDataManager.get(player.uniqueId)!!
-        val questData = playerData.currentQuests[questId] ?: throw IllegalArgumentException("The QuestData is not found: $questId")
+        val questData = playerData.currentQuests[questId] ?: return GiveUpResult.NOT_ORDERED
 
         // クエストを受注しているか
         val status = questData.status as? QuestStatus.InProgress ?: return GiveUpResult.NOT_ORDERED
 
-        quest.missions.getOrNull(status.progress)?.onGiveUp?.let { it(player) }
 
+        quest.missions.getOrNull(status.progress)?.let { it.onGiveUp(player) }
+        quest.onGiveUp(player)
 
         playerData.giveUp(questId)
-
-        quest.onGiveUp(player)
 
         return GiveUpResult.SUCCESS
     }
@@ -132,17 +130,15 @@ object PlayerQuestController {
         if (status.missionCount < currentMission.goal) return NextMissionResult.DO_NOT_HAVE_ENOUGH_MISSION_COUNT
 
         currentMission.onClear(player)
-        playerData.nextMission(questId)
 
-        // 次のミッションがあるか
-        // なければ終了
         return if (status.progress >= quest.missions.lastIndex) {
             complete(player, questId)
 
             NextMissionResult.QUEST_COMPLETE
         } else {
-            // 次のミッションのスタート
             quest.missions.getOrNull(status.progress)!!.onStart(player)
+
+            playerData.nextMission(questId)
 
             NextMissionResult.SUCCESS
         }
@@ -162,10 +158,11 @@ object PlayerQuestController {
             return IncrementMissionCountResult.QUEST_COMPLETE
         }
 
-        currentMission.onChangeCount(player, status.progress, status.progress + count)
-        status.progress += count
+        currentMission.onChangeCount(player, status.missionCount, status.missionCount + count)
 
-        if (status.progress >= currentMission.goal) {
+        status.missionCount += count
+
+        if (status.missionCount >= currentMission.goal) {
             nextMission(player, questId)
             return IncrementMissionCountResult.NEXT_MISSION
         }

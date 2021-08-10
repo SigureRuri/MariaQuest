@@ -34,7 +34,7 @@ class PlayerData(
     // クエストを強制的にクリアする
     // すでにクリアされていても上書きしてクリアする
     fun complete(id: QuestId) {
-        if (MariaQuest.questManager.has(id)) throw IllegalArgumentException("The quest is not found: $id")
+        if (!MariaQuest.questManager.has(id)) throw IllegalArgumentException("The quest is not found: $id")
         val questData = currentQuests[id] ?: throw IllegalArgumentException("The QuestData is not found: $id")
 
         questData.status = QuestStatus.Idle
@@ -45,7 +45,7 @@ class PlayerData(
     // クエストを断念する
     // すでにクリアされていても上書きして断念する
     fun giveUp(id: QuestId) {
-        if (MariaQuest.questManager.has(id)) throw IllegalArgumentException("The quest is not found: $id")
+        if (!MariaQuest.questManager.has(id)) throw IllegalArgumentException("The quest is not found: $id")
         val questData = currentQuests[id] ?: throw IllegalArgumentException("The QuestData is not found: $id")
 
         questData.status = QuestStatus.Idle
