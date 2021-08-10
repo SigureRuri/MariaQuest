@@ -29,7 +29,7 @@ object PlayerQuestController {
         if (questData.status !is QuestStatus.Idle) return OrderResult.ALREADY_ORDERED
 
         // クエスト受注回数が規定を超えていない
-        if (quest.orderableTimes != null && questData.clearCount > quest.orderableTimes) return OrderResult.OVER_ORDERABLE_TIMES
+        if (quest.orderableTimes != null && questData.clearCount >= quest.orderableTimes) return OrderResult.OVER_ORDERABLE_TIMES
 
         // 前提クエストの確認
         quest.requiredQuests.forEach {
