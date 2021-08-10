@@ -136,7 +136,7 @@ object PlayerQuestController {
 
             NextMissionResult.QUEST_COMPLETE
         } else {
-            quest.missions.getOrNull(status.progress)!!.onStart(player)
+            quest.missions.getOrNull(status.progress + 1)!!.onStart(player)
 
             playerData.nextMission(questId)
 
