@@ -18,7 +18,8 @@ class YamlPlayerDataManipulator(
     override fun load(uuid: UUID): PlayerData {
         val dataFile = File("${dataFolder.absolutePath}${File.separator}${uuid}.yml").apply {
             if (!parentFile.exists()) parentFile.mkdirs()
-            if (!exists()) createNewFile()
+            // ファイルが存在しない = プレイヤーデータが存在しないので新しく作成する
+            if (!exists()) return PlayerData(uuid)
         }
         val yaml: FileConfiguration = YamlConfiguration().apply {
             load(dataFile)
