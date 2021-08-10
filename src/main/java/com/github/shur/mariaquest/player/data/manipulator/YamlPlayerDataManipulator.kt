@@ -39,8 +39,12 @@ class YamlPlayerDataManipulator(
                     val questSection = yaml.getConfigurationSection("quests.$questId")!!
                     val questData = QuestData(questId).apply {
                         clearCount = questSection.getInt("clearCount")
-                        lastStartedAt = LocalDateTime.parse(questSection.getString("lastStartedAt"), DateTimeFormatter.BASIC_ISO_DATE)
-                        lastEndedAt = LocalDateTime.parse(questSection.getString("lastEndedAt"), DateTimeFormatter.BASIC_ISO_DATE)
+                        if (questSection.isString("lastStartedAt")) {
+                            lastStartedAt = LocalDateTime.parse(questSection.getString("lastStartedAt"), DateTimeFormatter.ISO_DATE_TIME)
+                        }
+                        if (questSection.isString("lastClearedAt")) {
+                            lastEndedAt = LocalDateTime.parse(questSection.getString("lastClearedAt"), DateTimeFormatter.ISO_DATE_TIME)
+                        }
 
                         when (questSection.getString("status")) {
                             "idle" -> {
@@ -76,8 +80,8 @@ class YamlPlayerDataManipulator(
             val questSection = yaml.createSection("quests.${quest.id}")
 
             questSection.set("clearCount", quest.clearCount)
-            questSection.set("lastStartedAt", quest.lastStartedAt?.format(DateTimeFormatter.BASIC_ISO_DATE))
-            questSection.set("lastEndedAt", quest.lastEndedAt?.format(DateTimeFormatter.BASIC_ISO_DATE))
+            questSection.set("lastStartedAt", quest.lastStartedAt?.format(DateTimeFormatter.ISO_DATE_TIME))
+            questSection.set("lastClearedAt", quest.lastEndedAt?.format(DateTimeFormatter.ISO_DATE_TIME))
 
             when (val questStatus = quest.status) {
                 is QuestStatus.Idle -> {
