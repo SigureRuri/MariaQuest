@@ -114,7 +114,7 @@ object PlayerQuestController {
     fun nextMission(player: Player, questId: QuestId): NextMissionResult {
         val quest = MariaQuest.questManager.get(questId) ?: throw IllegalArgumentException("The quest is not found: $questId")
         val playerData = MariaQuest.playerDataManager.get(player.uniqueId)!!
-        val questData = playerData.currentQuests[questId] ?: throw IllegalArgumentException("The QuestData is not found: $questId")
+        val questData = playerData.currentQuests[questId] ?: return NextMissionResult.NOT_ORDERED
 
         // クエストを受注しているか
         val status = questData.status as? QuestStatus.InProgress ?: return NextMissionResult.NOT_ORDERED
@@ -148,7 +148,7 @@ object PlayerQuestController {
     fun incrementMissionCount(player: Player, questId: QuestId, count: Int): IncrementMissionCountResult {
         val quest = MariaQuest.questManager.get(questId) ?: throw IllegalArgumentException("The quest is not found: $questId")
         val playerData = MariaQuest.playerDataManager.get(player.uniqueId)!!
-        val questData = playerData.currentQuests[questId] ?: throw IllegalArgumentException("The QuestData is not found: $questId")
+        val questData = playerData.currentQuests[questId] ?: return IncrementMissionCountResult.NOT_ORDERED
         val status = questData.status as? QuestStatus.InProgress ?: return IncrementMissionCountResult.NOT_ORDERED
 
         // 現在のミッションが存在しなければクエスト終了
