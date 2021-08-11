@@ -10,7 +10,7 @@ import org.bukkit.Material
 object QuestIcons {
 
     fun applyQuestIcon(icon: IconDSL, quest: Quest) = icon.apply {
-        type = Material.LIGHT_BLUE_CONCRETE
+        type = quest.icon
         name = "${ChatColor.WHITE}${quest.name}"
 
         lore = mutableListOf<String>().apply {
@@ -46,7 +46,7 @@ object QuestIcons {
     }
 
     fun applyQuestIconWithAllData(icon: IconDSL, quest: Quest) = icon.apply {
-        type = Material.LIGHT_BLUE_CONCRETE
+        type = quest.icon
         name = "${ChatColor.WHITE}${quest.name}"
 
         lore = mutableListOf<String>().apply {

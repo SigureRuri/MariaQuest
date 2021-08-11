@@ -4,6 +4,8 @@ import com.github.shur.mariaquest.MariaQuest
 import com.github.shur.mariaquest.player.data.QuestData
 import com.github.shur.mariaquest.player.data.QuestStatus
 import com.github.shur.mariaquest.quest.QuestId
+import org.bukkit.ChatColor
+import org.bukkit.Sound
 import org.bukkit.entity.Player
 import java.time.LocalDateTime
 
@@ -76,7 +78,6 @@ object PlayerQuestController {
 
         if (status.progress < quest.missions.lastIndex) return CompleteResult.NOT_CLEARED_ALL_MISSIONS
 
-
         quest.onClear(player)
 
         playerData.complete(questId)
@@ -92,56 +93,12 @@ object PlayerQuestController {
         // クエストを受注しているか
         val status = questData.status as? QuestStatus.InProgress ?: return GiveUpResult.NOT_ORDERED
 
-
         quest.missions.getOrNull(status.progress)?.let { it.onGiveUp(player) }
         quest.onGiveUp(player)
 
         playerData.giveUp(questId)
 
         return GiveUpResult.SUCCESS
-    }
-
-    /*
-     * クエストを次の段階に進める。
-     * 次のクエストがなければクエストを終了する。
-     *
-     * 次に進むかどうかの検証は、
-     * - クエストを受注しているか
-     * - ミッションカウントが目標数を超えているか
-     * - 次のミッションがあるか
-     * の順で行われる。
-     */
-    fun nextMission(player: Player, questId: QuestId): NextMissionResult {
-        val quest = MariaQuest.questManager.get(questId) ?: throw IllegalArgumentException("The quest is not found: $questId")
-        val playerData = MariaQuest.playerDataManager.get(player.uniqueId)!!
-        val questData = playerData.currentQuests[questId] ?: return NextMissionResult.NOT_ORDERED
-
-        // クエストを受注しているか
-        val status = questData.status as? QuestStatus.InProgress ?: return NextMissionResult.NOT_ORDERED
-
-        // 現在のミッションが存在しなければクエスト終了
-        val currentMission = quest.missions.getOrNull(status.progress)
-        if (currentMission == null) {
-            complete(player, questId)
-            return NextMissionResult.QUEST_COMPLETE
-        }
-
-        // ミッションカウントが目標数を超えているか
-        if (status.missionCount < currentMission.goal) return NextMissionResult.DO_NOT_HAVE_ENOUGH_MISSION_COUNT
-
-        currentMission.onClear(player)
-
-        return if (status.progress >= quest.missions.lastIndex) {
-            complete(player, questId)
-
-            NextMissionResult.QUEST_COMPLETE
-        } else {
-            quest.missions.getOrNull(status.progress + 1)!!.onStart(player)
-
-            playerData.nextMission(questId)
-
-            NextMissionResult.SUCCESS
-        }
     }
 
     // countは負の値も可
@@ -162,12 +119,23 @@ object PlayerQuestController {
 
         status.missionCount += count
 
-        if (status.missionCount >= currentMission.goal) {
-            nextMission(player, questId)
-            return IncrementMissionCountResult.NEXT_MISSION
-        }
+        return if (status.missionCount >= currentMission.goal) {
+            currentMission.onClear(player)
 
-        return IncrementMissionCountResult.SUCCESS
+            // 次のミッションへ/クエスト終了
+            if (status.progress >= quest.missions.lastIndex) {
+                complete(player, questId)
+
+                IncrementMissionCountResult.QUEST_COMPLETE
+            } else {
+                quest.missions.getOrNull(status.progress + 1)!!.onStart(player)
+                playerData.nextMission(questId)
+
+                IncrementMissionCountResult.NEXT_MISSION
+            }
+        } else {
+            IncrementMissionCountResult.SUCCESS
+        }
     }
 
     enum class OrderResult {
@@ -190,18 +158,11 @@ object PlayerQuestController {
         NOT_ORDERED
     }
 
-    enum class NextMissionResult {
-        SUCCESS,
-        QUEST_COMPLETE,
-        NOT_ORDERED,
-        DO_NOT_HAVE_ENOUGH_MISSION_COUNT
-    }
-
     enum class IncrementMissionCountResult {
         SUCCESS,
         QUEST_COMPLETE,
         NOT_ORDERED,
-        NEXT_MISSION
+        NEXT_MISSION,
     }
 
 }
