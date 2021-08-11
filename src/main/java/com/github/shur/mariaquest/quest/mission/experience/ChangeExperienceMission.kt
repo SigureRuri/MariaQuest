@@ -1,4 +1,4 @@
-package com.github.shur.mariaquest.quest.mission.enchant
+package com.github.shur.mariaquest.quest.mission.experience
 
 import com.github.shur.mariaquest.MariaQuest
 import com.github.shur.mariaquest.player.PlayerQuestController
@@ -8,24 +8,19 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.enchantment.EnchantItemEvent
+import org.bukkit.event.player.PlayerExpChangeEvent
 
-class EnchantMission(
+class ChangeExperienceMission(
     goal: Int,
     onStart: (Player) -> Unit,
     onChangeCount: (Player, before: Int, after: Int) -> Unit,
     onClear: (Player) -> Unit,
     onGiveUp: (Player) -> Unit,
-    filter: (Player, EnchantEvent) -> Boolean
-) : Mission<EnchantMission.EnchantEvent>(goal, onStart, onChangeCount, onClear, onGiveUp, filter) {
+    filter: (Player, ChangeExperienceEvent) -> Boolean
+) : Mission<ChangeExperienceMission.ChangeExperienceEvent>(goal, onStart, onChangeCount, onClear, onGiveUp, filter) {
 
-    data class EnchantEvent(val raw: EnchantItemEvent) {
-        val view = raw.view
-        val enchantingTable = raw.enchantBlock
-        val item = raw.item
-        val expLevelCost = raw.expLevelCost
-        val enchants = raw.enchantsToAdd
-        val placedButton = raw.whichButton()
+    data class ChangeExperienceEvent(val raw: PlayerExpChangeEvent) {
+        val amount = raw.amount
     }
 
     companion object : Listener {
@@ -35,16 +30,16 @@ class EnchantMission(
         }
 
         @EventHandler(priority = EventPriority.LOW)
-        fun onEnchantItem(event: EnchantItemEvent) {
-            val player = event.enchanter
+        fun onChangeExperience(event: PlayerExpChangeEvent) {
+            val player = event.player
             val playerData = MariaQuest.playerDataManager.get(player.uniqueId)!!
 
             playerData.getQuests().forEach { questData ->
                 val quest = MariaQuest.questManager.get(questData.id) ?: return@forEach
                 val status = questData.status as? QuestStatus.InProgress ?: return@forEach
-                val mission = quest.missions.getOrNull(status.progress) as? EnchantMission ?: return@forEach
+                val mission = quest.missions.getOrNull(status.progress) as? ChangeExperienceMission ?: return@forEach
 
-                val missionEvent = EnchantEvent(event)
+                val missionEvent = ChangeExperienceEvent(event)
                 if (!mission.filter(player, missionEvent)) return
 
                 PlayerQuestController.incrementMissionCount(player, quest.id, 1)
