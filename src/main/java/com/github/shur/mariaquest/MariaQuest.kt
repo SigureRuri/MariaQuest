@@ -6,6 +6,7 @@ import com.github.shur.mariaquest.player.data.PlayerDataManager
 import com.github.shur.mariaquest.player.data.manipulator.PlayerDataManipulator
 import com.github.shur.mariaquest.player.data.manipulator.YamlPlayerDataManipulator
 import com.github.shur.mariaquest.quest.QuestManager
+import com.github.shur.mariaquest.task.CheckTimeLimitTask
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
@@ -22,7 +23,7 @@ class MariaQuest : JavaPlugin() {
 
         server.pluginManager.registerEvents(PlayerDataListener(), this)
 
-        startTickRunnable()
+        startRunnable()
     }
 
     override fun onDisable() {
@@ -31,7 +32,8 @@ class MariaQuest : JavaPlugin() {
         }
     }
 
-    private fun startTickRunnable() {
+    private fun startRunnable() {
+        // Start tick runnable
         server.scheduler.runTaskTimer(
             this,
             Runnable {
@@ -40,6 +42,9 @@ class MariaQuest : JavaPlugin() {
             0,
             1
         )
+
+        // Start check TimeLimit runnable
+        CheckTimeLimitTask().runTaskTimer(this, 20, 20)
     }
 
     companion object {
