@@ -13,6 +13,8 @@ class PlayerDataManager(
 
     fun getAll() = playerDataMap.values.toList()
 
+    fun contains(uuid: UUID) = playerDataMap.contains(uuid)
+
     fun load(uuid: UUID): Boolean =
         try {
             val playerData = playerDataManipulator.load(uuid)

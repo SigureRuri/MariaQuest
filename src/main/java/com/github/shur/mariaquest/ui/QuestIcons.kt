@@ -5,7 +5,6 @@ import com.github.shur.mariaquest.extension.secondsToDaysAndHoursAndMinutesAndSe
 import com.github.shur.mariaquest.quest.Quest
 import com.github.shur.whitebait.dsl.window.IconDSL
 import org.bukkit.ChatColor
-import org.bukkit.Material
 
 object QuestIcons {
 

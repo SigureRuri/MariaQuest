@@ -4,8 +4,6 @@ import com.github.shur.mariaquest.MariaQuest
 import com.github.shur.mariaquest.player.data.QuestData
 import com.github.shur.mariaquest.player.data.QuestStatus
 import com.github.shur.mariaquest.quest.QuestId
-import org.bukkit.ChatColor
-import org.bukkit.Sound
 import org.bukkit.entity.Player
 import java.time.LocalDateTime
 
