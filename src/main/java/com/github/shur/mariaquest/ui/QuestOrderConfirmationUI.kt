@@ -32,7 +32,7 @@ class QuestOrderConfirmationUI(
                 name = "${ChatColor.GOLD}${ChatColor.BOLD}受注"
             }
             onClick {
-                when (PlayerQuestController.order(player, questId)) {
+                when (PlayerQuestController.order(player, quest)) {
                     PlayerQuestController.OrderResult.ALREADY_ORDERED -> player.sendMessage("すでにこのクエストを受注しています。")
                     PlayerQuestController.OrderResult.OVER_ORDERABLE_TIMES -> player.sendMessage("クエスト受注可能回数の上限に達しています。")
                     PlayerQuestController.OrderResult.NOT_CLEARED_REQUIRED_QUESTS -> player.sendMessage("前提クエストをクリアしていません。")

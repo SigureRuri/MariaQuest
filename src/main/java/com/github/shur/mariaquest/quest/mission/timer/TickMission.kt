@@ -38,7 +38,7 @@ class TickMission(
 
                     if (!mission.filter(player, Unit)) return@questLoop
 
-                    PlayerQuestController.incrementMissionCount(player, quest.id, 1)
+                    PlayerQuestController.incrementMissionCount(player, quest, 1)
                 }
             }
         }

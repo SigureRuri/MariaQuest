@@ -19,7 +19,7 @@ class CheckTimeLimitTask : BukkitRunnable() {
 
                 quest.timeLimitSeconds?.let { timeLimitSeconds ->
                     if (startedAt.plusSeconds(timeLimitSeconds) < LocalDateTime.now()) {
-                        PlayerQuestController.giveUp(player, quest.id)
+                        PlayerQuestController.giveUp(player, quest)
                     }
                 }
             }

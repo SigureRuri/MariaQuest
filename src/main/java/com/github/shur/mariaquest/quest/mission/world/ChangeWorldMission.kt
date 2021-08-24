@@ -43,7 +43,7 @@ class ChangeWorldMission(
                 val missionEvent = ChangeWorldEvent(event)
                 if (!mission.filter(player, missionEvent)) return
 
-                PlayerQuestController.incrementMissionCount(player, quest.id, 1)
+                PlayerQuestController.incrementMissionCount(player, quest, 1)
             }
         }
 
