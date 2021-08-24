@@ -7,27 +7,30 @@ MariaQuestは、一般のRPGに登場するようなクエストをプログラ�
 使用時に各々で実装していただくようお願いします。
 
 ## クエスト定義
-クエストは`org.github.shur.mariaquest.quest.Quest`クラスを使用して定義します。
-定義に必要な値はすべてコンストラクタで渡します。
+クエストは`org.github.shur.mariaquest.quest.Quest`クラスを使用して定義します。  
+IDのみコンストラクタで渡し、以降のパラーメタはすべてオーバーライドで行います。
 
-以下はコンストラクタで使用する値の一覧です。  
-上からコンストラクタに渡す順に記載しています。
-
+コンストラクタの値
 |          名前           |             型              |            説明            |
 |          :-:           |             :-:             |            :-:            |
 |           id           |           QuestId           | 一意なクエストのID           |
-|          name          |            String           | 表示される名前               |
-|       description      |         List<String>        | 表示される説明               |
-|        missions        |       List<Mission<*>>      | クリアに必要なミッション(後述) |
-|    timeLimitSeconds    |             Long?           | クエストのタイムリミット      |
-|    coolTimeSeconds     |             Long?           | クールタイム                |
-|     orderableTimes     |              Int?           | 最大受注可能回数             |
-|     requiredQuests     |          List<QuestId>      | 前提クエスト                 |
-|      requirement       |     (Player) -> Boolean     | 受注条件                    |
-| requirementDescription |          List<String        | 表示される受注条件            |
-|         onStart        |       (Player) -> Unit      | スタート時に行う動作          |
-|         onClear        |       (Player) -> Unit      | クリア時に行う動作            |
-|         onGiveUp       |       (Player) -> Unit      | ギブアップ時に行う動作         |
+
+
+オーバーライドする値
+|          名前           |    タイプ   |             型              |            説明            | オーバーライド必須 |
+|          :-:           |     :-:    |             :-:             |            :-:            |       :-:       |
+|          name          |    value   |            String           | 表示される名前               |       yes       |
+|       description      |    value   |         List<String>        | 表示される説明               |        no       |
+|        missions        |    value   |       List<Mission<*>>      | クリアに必要なミッション(後述) |        no       |
+|    timeLimitSeconds    |    value   |             Long?           | クエストのタイムリミット      |        no       |
+|    coolTimeSeconds     |    value   |             Long?           | クールタイム                |        no       |
+|     orderableTimes     |    value   |              Int?           | 最大受注可能回数             |        no       |
+|     requiredQuests     |    value   |          List<QuestId>      | 前提クエスト                 |        no       |
+| requirementDescription |    value   |          List<String        | 表示される受注条件            |        no       |
+|     canByOrderedBy     |  function  |     (Player) -> Boolean     | 受注条件                    |        no       |
+|         onStart        |  function  |       (Player) -> Unit      | スタート時に行う動作          |        no       |
+|         onClear        |  function  |       (Player) -> Unit      | クリア時に行う動作            |        no       |
+|         onGiveUp       |  function  |       (Player) -> Unit      | ギブアップ時に行う動作         |        no       |
 
 ### ミッション定義
 ミッションは、`org.github.shur.mariaquest.quest.mission.Mission`を拡張するクラスです。

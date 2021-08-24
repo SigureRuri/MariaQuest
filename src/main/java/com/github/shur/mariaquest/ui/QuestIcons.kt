@@ -23,11 +23,11 @@ object QuestIcons {
             add("")
             if (quest.timeLimitSeconds != null) {
                 add("${ChatColor.GREEN}${ChatColor.BOLD} - 時間制限")
-                add("    ${quest.timeLimitSeconds.secondsToDaysAndHoursAndMinutesAndSeconds()}")
+                add("    ${quest.timeLimitSeconds!!.secondsToDaysAndHoursAndMinutesAndSeconds()}")
             }
             if (quest.coolTimeSeconds != null) {
                 add("${ChatColor.GREEN}${ChatColor.BOLD} - クールタイム")
-                add("    ${quest.coolTimeSeconds.secondsToDaysAndHoursAndMinutesAndSeconds()}")
+                add("    ${quest.coolTimeSeconds!!.secondsToDaysAndHoursAndMinutesAndSeconds()}")
             }
             if (quest.orderableTimes != null) {
                 add("${ChatColor.GREEN}${ChatColor.BOLD} - 受注可能回数")
